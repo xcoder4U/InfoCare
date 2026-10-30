@@ -1,0 +1,28 @@
+name: Build InfoCare APK and AAB
+on:
+  push:
+  workflow_dispatch:
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+      - name: Set up Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+      - name: Install Gradle 8.9
+        uses: gradle/actions/setup-gradle@v4
+        with:
+          gradle-version: '8.9'
+      - name: Build APK and AAB
+        run: gradle --no-daemon assembleDebug bundleRelease
+      - name: Upload build files
+        uses: actions/upload-artifact@v4
+        with:
+          name: InfoCare-APK-and-AAB
+          path: |
+            app/build/outputs/apk/debug/*.apk
+            app/build/outputs/bundle/release/*.aab
